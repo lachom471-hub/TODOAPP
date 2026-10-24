@@ -1,11 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Todo App</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      padding: 50px 15px;
+    }
+
+    .todo-container {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px #00000012;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background: #2563eb;
+      color: white;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      overflow-wrap: anywhere;
+    }
+
+    li span {
+      flex: 1;
+    }
+
+    li.completed span {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .delete-btn {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    #count {
+      color: #777;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+  </style>
 </head>
+
 <body>
-    
+  <div class="todo-container">
+    <h1>My Todo List</h1>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter a task..."
+      >
+      <button class="add-btn" onclick="addTask()">
+        Add
+      </button>
+    </div>
+
+    <ul id="taskList"></ul>
+    <p id="count">0 tasks remaining</p>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+    const count = document.getElementById("count");
+
+    function addTask() {
+      const task = taskInput.value.trim();
+
+      if (task === "") {
+        taskInput.focus();
+        return;
+      }
+
+      const li = document.createElement("li");
+      const checkbox = document.createElement("input");
+      const span = document.createElement("span");
+      const deleteBtn = document.createElement("button");
+
+      checkbox.type = "checkbox";
+      span.textContent = task;
+      deleteBtn.textContent = "Delete";
+      deleteBtn.className = "delete-btn";
+
+      checkbox.addEventListener("change", () => {
+        li.classList.toggle("completed", checkbox.checked);
+        updateCount();
+      });
+
+      deleteBtn.addEventListener("click", () => {
+        li.remove();
+        updateCount();
+      });
+
+      li.append(checkbox, span, deleteBtn);
+      taskList.appendChild(li);
+
+      taskInput.value = "";
+      taskInput.focus();
+      updateCount();
+    }
+
+    function updateCount() {
+      const tasks = taskList.querySelectorAll("li");
+      const remaining = [...tasks].filter(
+        task => !task.querySelector("input").checked
+      ).length;
+
+      count.textContent = `${remaining} task${remaining !== 1 ? "s" : ""} remaining`;
+    }
+
+    taskInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        addTask();
+      }
+    });
+  </script>
 </body>
 </html>
